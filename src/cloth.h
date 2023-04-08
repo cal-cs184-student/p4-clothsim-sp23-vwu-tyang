@@ -76,6 +76,12 @@ struct Cloth {
 
   // Spatial hashing
   unordered_map<float, vector<PointMass *> *> map;
+
+    void buildPointMasses();
+
+    void buildSprings();
+
+    void addSpring(int hPos, int wPos, int dh, int dw, e_spring_type sType);
 };
 
 #endif /* CLOTH_H */
