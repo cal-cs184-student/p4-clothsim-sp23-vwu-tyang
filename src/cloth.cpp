@@ -32,7 +32,54 @@ Cloth::~Cloth() {
 
 void Cloth::buildGrid() {
   // TODO (Part 1): Build a grid of masses and springs.
+  buildPointMasses();
+  buildSprings();
+}
 
+void Cloth::buildPointMasses() {
+    double di = height / num_height_points;
+    double dj = width / num_width_points;
+    for (int i = 0; i < num_height_points; i++) {
+        for (int j = 0; j < num_width_points; j++) {
+            Vector3D location;
+            if (orientation == HORIZONTAL) {
+                location = Vector3D(j * dj, 1, di * i);
+            } else {
+                double offset = ((double) ::rand())/RAND_MAX * 0.002 - 0.001;
+                location = Vector3D(dj * j, di * i, offset);
+            }
+            PointMass p = PointMass(location, false);
+            point_masses.emplace_back(p);
+        }
+    }
+    for (vector<int> pin : pinned) {
+        point_masses[pin[0] * num_width_points + pin[1]].pinned = true;
+    }
+}
+
+void Cloth::buildSprings() {
+    for (int i = 0; i < num_height_points; i++) {
+        for (int j = 0; j < num_width_points; j++) {
+            //add structural constraints
+            addSpring(j, i, j - 1, i, CGL::STRUCTURAL);
+            addSpring(j, i, j, i - 1, CGL::STRUCTURAL);
+            //add shearing constraints
+            addSpring(j , i, j - 1, i - 1, CGL::SHEARING);
+            addSpring(j, i, j - 1, i + 1, CGL::SHEARING);
+            //add bending constraints
+            addSpring(j, i, j - 2, i, CGL::BENDING);
+            addSpring(j, i, j, i - 2, CGL::BENDING);
+        }
+    }
+}
+
+void Cloth::addSpring(int wPos, int hPos, int dw, int dh, e_spring_type sType) {
+    if (dh >= 0 && dh < num_width_points && dw >= 0 && dw < num_height_points) {
+        Spring s = Spring(&point_masses[wPos * num_width_points + hPos],
+                          &point_masses[dw * num_width_points + dh],
+                          sType);
+        springs.emplace_back(s);
+    }
 }
 
 void Cloth::simulate(double frames_per_sec, double simulation_steps, ClothParameters *cp,
