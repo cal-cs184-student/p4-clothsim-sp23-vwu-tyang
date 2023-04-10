@@ -81,7 +81,7 @@ struct Cloth {
 
     void buildSprings();
 
-    void addSpring(int hPos, int wPos, int dh, int dw, e_spring_type sType);
+    void addSpring(int wPos, int hPos, int dw, int dh, e_spring_type sType);
 
     void removeForces();
 

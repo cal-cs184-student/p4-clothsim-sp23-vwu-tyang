@@ -53,7 +53,7 @@ void Cloth::buildPointMasses() {
         }
     }
     for (vector<int> pin : pinned) {
-        point_masses[pin[0] * num_width_points + pin[1]].pinned = true;
+        point_masses[pin[1] * num_width_points + pin[0]].pinned = true;
     }
 }
 
@@ -74,7 +74,7 @@ void Cloth::buildSprings() {
 }
 
 void Cloth::addSpring(int wPos, int hPos, int dw, int dh, e_spring_type sType) {
-    if (dh >= 0 && dh < num_width_points && dw >= 0 && dw < num_height_points) {
+    if (dh >= 0 && dh < num_height_points && dw >= 0 && dw < num_width_points) {
         Spring s = Spring(&point_masses[wPos * num_width_points + hPos],
                           &point_masses[dw * num_width_points + dh],
                           sType);
