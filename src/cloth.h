@@ -88,7 +88,7 @@ struct Cloth {
     void computeTotalForces(ClothParameters *cp, vector<Vector3D> external_accelerations, double mass);
 
     void
-    computeVerletIntegration(ClothParameters *cp, double mass, double delta_t);
+    computeVerletIntegration(ClothParameters *cp, vector<Vector3D> external_accelerations, double mass, double delta_t);
 
     void constrainPositionUpdates(ClothParameters *cp);
 };

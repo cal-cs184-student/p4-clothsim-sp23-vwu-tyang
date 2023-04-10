@@ -119,11 +119,15 @@ void Cloth::computeTotalForces(ClothParameters *cp, vector<Vector3D> external_ac
     }
 }
 
-void Cloth::computeVerletIntegration(ClothParameters *cp, double mass, double delta_t) {
+void Cloth::computeVerletIntegration(ClothParameters *cp, vector<Vector3D> external_accelerations, double mass, double delta_t) {
     for (PointMass &p: point_masses) {
         if (!p.pinned) {
             Vector3D oldLoc = p.position;
-            p.position = p.position + (1. - cp->damping/100.) * (p.position - p.last_position) + (p.forces / mass) * delta_t * delta_t;
+            Vector3D accel_sum = Vector3D(0.0);
+            for (Vector3D a: external_accelerations) {
+                accel_sum += a;
+            }
+            p.position = p.position + (1. - cp->damping/100.) * (p.position - p.last_position) + (accel_sum) * delta_t * delta_t;
             p.last_position = oldLoc;
         }
     }
@@ -177,7 +181,7 @@ void Cloth::simulate(double frames_per_sec, double simulation_steps, ClothParame
   computeTotalForces(cp, external_accelerations, mass);
 
   // TODO (Part 2): Use Verlet integration to compute new point mass positions
-  computeVerletIntegration(cp, mass, delta_t);
+  computeVerletIntegration(cp, external_accelerations, mass, delta_t);
 
   // TODO (Part 4): Handle self-collisions.
 
