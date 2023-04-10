@@ -82,6 +82,91 @@ void Cloth::addSpring(int wPos, int hPos, int dw, int dh, e_spring_type sType) {
     }
 }
 
+void Cloth::removeForces() {
+    for (PointMass p: point_masses) {
+        p.forces = Vector3D(0);
+    }
+}
+
+void Cloth::computeTotalForces(ClothParameters *cp, vector<Vector3D> external_accelerations, double mass) {
+    removeForces();
+    Vector3D ext = Vector3D(0);
+    for (Vector3D &accel: external_accelerations) {
+        ext += accel * mass;
+    }
+    for (PointMass &p: point_masses) {
+        p.forces = ext;
+    }
+    for (Spring &s: springs) {
+        switch (s.spring_type) {
+            case CGL::STRUCTURAL:
+                if (!cp->enable_structural_constraints) {
+                    continue;
+                }
+            case CGL::SHEARING:
+                if (!cp->enable_shearing_constraints) {
+                    continue;
+                }
+            case CGL::BENDING:
+                if (!cp->enable_bending_constraints) {
+                    continue;
+                }
+        }
+        Vector3D aTob = s.pm_a->position - s.pm_b->position;
+        double SpringForce = 0.2 * cp->ks * ((aTob).norm() - s.rest_length);
+        s.pm_a->forces -= aTob.unit() * SpringForce;
+        s.pm_b->forces += aTob.unit() * SpringForce;
+    }
+}
+
+void Cloth::computeVerletIntegration(ClothParameters *cp, double mass, double delta_t) {
+    for (PointMass &p: point_masses) {
+        if (!p.pinned) {
+            Vector3D oldLoc = p.position;
+            p.position = p.position + (1. - cp->damping/100.) * (p.position - p.last_position) + (p.forces / mass) * delta_t * delta_t;
+            p.last_position = oldLoc;
+        }
+    }
+}
+
+void Cloth::constrainPositionUpdates(ClothParameters *cp) {
+    for (Spring &s: springs) {
+        switch (s.spring_type) {
+            case CGL::STRUCTURAL:
+                if (!cp->enable_structural_constraints) {
+                    continue;
+                }
+            case CGL::SHEARING:
+                if (!cp->enable_shearing_constraints) {
+                    continue;
+                }
+            case CGL::BENDING:
+                if (!cp->enable_bending_constraints) {
+                    continue;
+                }
+        }
+        Vector3D directionVec = s.pm_a->position - s.pm_b->position;
+        double springLength = directionVec.norm();
+        if (springLength > 1.1 * s.rest_length) {
+            //case 1: both point masses are pinned
+            if (s.pm_a->pinned && s.pm_b->pinned) {
+                continue;
+            }
+                //case 2: only point mass a is pinned
+            else if (s.pm_a->pinned) {
+                s.pm_b->position += directionVec.unit() * (springLength - 1.1 * s.rest_length);
+            }
+                //case 3: only point mass b is pinned
+            else if (s.pm_b->pinned) {
+                s.pm_a->position -= directionVec.unit() * (springLength - 1.1 * s.rest_length);
+            } else {
+                s.pm_b->position += 0.5 * directionVec.unit() * (springLength - 1.1 * s.rest_length);
+                s.pm_a->position -= 0.5 * directionVec.unit() * (springLength - 1.1 * s.rest_length);
+            }
+        }
+    }
+}
+
 void Cloth::simulate(double frames_per_sec, double simulation_steps, ClothParameters *cp,
                      vector<Vector3D> external_accelerations,
                      vector<CollisionObject *> *collision_objects) {
@@ -89,10 +174,10 @@ void Cloth::simulate(double frames_per_sec, double simulation_steps, ClothParame
   double delta_t = 1.0f / frames_per_sec / simulation_steps;
 
   // TODO (Part 2): Compute total force acting on each point mass.
-
+  computeTotalForces(cp, external_accelerations, mass);
 
   // TODO (Part 2): Use Verlet integration to compute new point mass positions
-
+  computeVerletIntegration(cp, mass, delta_t);
 
   // TODO (Part 4): Handle self-collisions.
 
@@ -102,6 +187,7 @@ void Cloth::simulate(double frames_per_sec, double simulation_steps, ClothParame
 
   // TODO (Part 2): Constrain the changes to be such that the spring does not change
   // in length more than 10% per timestep [Provot 1995].
+  constrainPositionUpdates(cp);
 
 }
 

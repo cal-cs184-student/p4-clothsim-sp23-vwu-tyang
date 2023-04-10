@@ -82,6 +82,15 @@ struct Cloth {
     void buildSprings();
 
     void addSpring(int hPos, int wPos, int dh, int dw, e_spring_type sType);
+
+    void removeForces();
+
+    void computeTotalForces(ClothParameters *cp, vector<Vector3D> external_accelerations, double mass);
+
+    void
+    computeVerletIntegration(ClothParameters *cp, double mass, double delta_t);
+
+    void constrainPositionUpdates(ClothParameters *cp);
 };
 
 #endif /* CLOTH_H */
