@@ -182,7 +182,10 @@ void Cloth::simulate(double frames_per_sec, double simulation_steps, ClothParame
   computeVerletIntegration(cp, mass, delta_t);
 
   // TODO (Part 4): Handle self-collisions.
-
+  build_spatial_map();
+  for (PointMass &p : point_masses) {
+      self_collide(p, simulation_steps);
+  }
 
   // TODO (Part 3): Handle collisions with other primitives.
   for (PointMass &p : point_masses) {
@@ -199,24 +202,53 @@ void Cloth::simulate(double frames_per_sec, double simulation_steps, ClothParame
 }
 
 void Cloth::build_spatial_map() {
-  for (const auto &entry : map) {
-    delete(entry.second);
-  }
-  map.clear();
+    for (const auto &entry : map) {
+        delete(entry.second);
+    }
+    map.clear();
 
-  // TODO (Part 4): Build a spatial map out of all of the point masses.
-
+    // TODO (Part 4): Build a spatial map out of all of the point masses.
+    for (PointMass &p: point_masses) {
+        float hash_pos = hash_position((&p)->position);
+            if (map.find(hash_pos) == map.end()) {
+                // populate map
+                map[hash_pos] = new vector<PointMass*>();
+            }
+        map[hash_pos]->push_back(&p);
+    }
 }
 
 void Cloth::self_collide(PointMass &pm, double simulation_steps) {
-  // TODO (Part 4): Handle self-collision for a given point mass.
-
+    // TODO (Part 4): Handle self-collision for a given point mass.
+    float hash_pos = hash_position(pm.position);
+    int collide = 0;
+    Vector3D correction(0);
+    std::vector<PointMass*>& vec = *(map[hash_pos]);
+    for (std::vector<PointMass*>::iterator it = vec.begin(); it != vec.end(); ++it) {
+        PointMass* candidate = *it;
+        if (candidate != &pm) {
+            Vector3D distance = (candidate->position - pm.position); 
+            if (distance.norm() < 2 * thickness) {
+                collide += 1;
+                correction += distance - 2 * thickness * distance.unit();
+            }
+        } 
+    }
+    if (collide) {
+        correction /= (collide * simulation_steps);
+        pm.position += correction;
+    }
 }
 
 float Cloth::hash_position(Vector3D pos) {
-  // TODO (Part 4): Hash a 3D position into a unique float identifier that represents membership in some 3D box volume.
-
-  return 0.f; 
+    // TODO (Part 4): Hash a 3D position into a unique float identifier that represents membership in some 3D box volume.
+    float w = 3 * width / num_width_points;
+    float h = 3 * height / num_height_points;
+    float t = max(w, h);
+    int fx = floor(pos.x / w);
+    int fy = floor(pos.y / h);
+    int fz = floor(pos.z / t);
+    return (fx ^ (fy << 1)) ^ (fz << 2);
 }
 
 ///////////////////////////////////////////////////////
