@@ -13,6 +13,8 @@ out vec4 out_color;
 
 void main() {
   // YOUR CODE HERE
-  out_color = (vec4(1, 1, 1, 0) + v_normal) / 2;
+  vec3 w_out = normalize(u_cam_pos - v_position.xyz);
+  vec3 w_in = reflect(w_out, v_normal.xyz);
+  out_color = texture(u_texture_cubemap, w_in);
   out_color.a = 1;
 }
