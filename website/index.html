@@ -362,7 +362,7 @@
 </b></blockquote>
 
 <p>
-    TODO
+    Shader programs are programs that run on a GPU and is able to create visual elements of 3D scenes. There are mainly two types of shaders: vertex shaders and fragment shaders. Vertex shaders are useful for transforming the vertices of a 3D object into their final positions on the screen. They can also perform other operations, such as texture mapping. Fragment shaders, on the other hand, are responsible for determining the color of each pixel on the screen. They do this by taking into account the lighting and material properties of the object. Together, the two shaders can be used in conjunction (vertex->fragment).
 </p>
 
 
@@ -372,29 +372,32 @@
 </b></blockquote>
 
 <p>
-    TODO
+    The Blinn-Phong Shading model puts together three different components of lights: ambient, diffuse, and specular lighting. The ambient component represents the constant amount of light that is present in the environment. The diffuse component represents the light that is scattered in all directions when it hits a rough surface, and is dependent on the angle between the surface normal and the light direction. The specular component represents the light that is reflected in a single direction when it hits a shiny surface, and is dependent on the angle between the view direction and the reflection direction. 
+</p>
+<p>
+    The images below demonstrate each of these contributions independently, and the final image is a weighted sum. By tuning the parameters of each contribution, we can simulate different appearances of different materials.
 </p>
 
 <div align="middle">
     <table style="width:100%">
         <tr align="center">
             <td>
-                <img src="images/t5-blinn-phong-ambient.png" align="middle" width="400px" />
+                <img src="docs/p5_t2_ambient.png" align="middle" width="400px" />
                 <figcaption>Ambient component only</figcaption>
 
             </td>
             <td>
-                <img src="images/t5-blinn-phong-diffuse.png" align="middle" width="400px" />
+                <img src="docs/p5_t2_diffuse.png" align="middle" width="400px" />
                 <figcaption>Diffuse component only</figcaption>
             </td>
         </tr>
         <tr align="center">
             <td>
-                <img src="images/t5-blinn-phong-specular.png" align="middle" width="400px" />
+                <img src="docs/p5_t2_specular.png" align="middle" width="400px" />
                 <figcaption>Specular component only</figcaption>
             </td>
             <td>
-                <img src="images/t5-blinn-phong-all.png" align="middle" width="400px" />
+                <img src="docs/p5_t2_all.png" align="middle" width="400px" />
                 <figcaption>Complete Blinn-Phong model</figcaption>
             </td>
         </tr>
@@ -425,23 +428,38 @@
     <table style="width:100%">
         <tr align="center">
             <td>
-                <img src="images/t5-bump-mapping-cloth.png" align="middle" width="400vw" />
-                <figcaption>Bump Mapping on the Cloth</figcaption>
+                <img src="docs/p5_t4_bump_cloth_16.png" align="middle" width="400vw" />
+                <figcaption>Bump Mapping on the Cloth -o 16 -a 16</figcaption>
             </td>
             <td>
-                <img src="images/t5-bump-mapping-sphere.png" align="middle" width="400vw" />
-                <figcaption>Bump Mapping on the Sphere</figcaption>
+                <img src="docs/p5_t4_bump_cloth_128.png" align="middle" width="400vw" />
+                <figcaption>Bump Mapping on the Cloth -o 128 -a 128</figcaption>
             </td>
             <td>
+                <img src="docs/p5_t4_bump_sphere_16.png" align="middle" width="400vw" />
+                <figcaption>Bump Mapping on the Sphere -o 16 -a 16</figcaption>
+            </td>
+            <td>
+                <img src="docs/p5_t4_bump_sphere_128.png" align="middle" width="400vw" />
+                <figcaption>Bump Mapping on the Sphere -o 128 -a 128</figcaption>
+            </td>
         </tr>
         <tr align="center">
             <td>
-                <img src="images/t5-displacement-mapping-sphere.png" align="middle" width="400vw" />
-                <figcaption>Displacement Mapping on the Sphere</figcaption>
+                <img src="docs/p5_t4_disp_cloth_16.png" align="middle" width="400vw" />
+                <figcaption>Displacement Mapping on the Cloth -o 16 -a 16</figcaption>
             </td>
             <td>
-                <img src="images/t5-displacement-mapping-sphere-2.png" align="middle" width="400vw" />
-                <figcaption>Displacement Mapping on the Sphere (coarser mesh)</figcaption>
+                <img src="docs/p5_t4_disp_cloth_128.png" align="middle" width="400vw" />
+                <figcaption>Displacement Mapping on the Cloth -o 128 -a 128</figcaption>
+            </td>
+            <td>
+                <img src="docs/p5_t4_disp_sphere_16.png" align="middle" width="400vw" />
+                <figcaption>Displacement Mapping on the Sphere -o 16 -a 16</figcaption>
+            </td>
+            <td>
+                <img src="docs/p5_t4_disp_sphere_128.png" align="middle" width="400vw" />
+                <figcaption>Displacement Mapping on the Sphere -o 128 -a 128</figcaption>
             </td>
             <td>
         </tr>
@@ -449,7 +467,7 @@
 </div>
 
 <p>
-    TODO
+    Bump and displacement mapping are pretty similar. From the images above, it is obvious that displacement mapping adds in an additional step of moving (displacing) the vertex positions, whereas Bump mapping only modifes the normals of an object. Since in Bump mapping the texture is directly mapped on the sphere, there is no noticeable change in vertex positions of the object. In contrast, displacement mapping changes vertex positions to the height map and changes normals to stay consistent with the new vertex positions. Displacement mapping looks more edgy in comparison since the surface is actually being modified.
 </p>
 
 
@@ -461,11 +479,11 @@
     <table style="width:100%">
         <tr align="center">
             <td>
-                <img src="images/t5-mirror-shader-cloth.png" align="middle" width="400vw" />
+                <img src="docs/p5_mir_cloth.png" align="middle" width="400vw" />
                 <figcaption>Mirror Shader on the Cloth</figcaption>
             </td>
             <td>
-                <img src="images/t5-mirror-shader-sphere.png" align="middle" width="400vw" />
+                <img src="docs/p5_mir_sphere.png" align="middle" width="400vw" />
                 <figcaption>Mirror Shader on the Sphere</figcaption>
             </td>
             <td>

@@ -9,6 +9,9 @@ uniform vec4 u_color;
 uniform sampler2D u_texture_2;
 uniform vec2 u_texture_2_size;
 
+uniform sampler2D u_texture_3;
+uniform vec2 u_texture_3_size;
+
 uniform float u_normal_scaling;
 uniform float u_height_scaling;
 
@@ -21,7 +24,7 @@ out vec4 out_color;
 
 float helper(vec2 uv) {
     // You may want to use this helper function...
-    vec4 temp = texture(u_texture_2, uv);
+    vec4 temp = texture(u_texture_3, uv);
     return temp.r;
 }
 
@@ -39,8 +42,8 @@ void main() {
   mat3 tbn = mat3(t, b, n);
 
   // compute dU, dV, n0, nd
-  float w = u_texture_2_size[0];
-  float h = u_texture_2_size[1];
+  float w = u_texture_3_size[0];
+  float h = u_texture_3_size[1];
   float dU = 10 * (helper(v_uv + vec2(1.0/w, 0.0)) - helper(v_uv)) * u_normal_scaling * u_height_scaling;
   float dV = 10 * (helper(v_uv + vec2(0.0, 1.0/h)) - helper(v_uv)) * u_normal_scaling * u_height_scaling;
   vec3 n0 = normalize(vec3(-dU, -dV, 1));
