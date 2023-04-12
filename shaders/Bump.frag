@@ -9,6 +9,9 @@ uniform vec4 u_color;
 uniform sampler2D u_texture_2;
 uniform vec2 u_texture_2_size;
 
+uniform sampler2D u_texture_3;
+uniform vec2 u_texture_3_size;
+
 uniform float u_normal_scaling;
 uniform float u_height_scaling;
 

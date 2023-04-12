@@ -6,6 +6,7 @@ uniform mat4 u_model;
 uniform sampler2D u_texture_2;
 uniform vec2 u_texture_2_size;
 
+
 uniform float u_normal_scaling;
 uniform float u_height_scaling;
 
