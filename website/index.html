@@ -1,41 +1,129 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
 <head>
-<style>
-  body {
-    padding: 100px;
-    width: 1000px;
-    margin: auto;
-    text-align: left;
-    font-weight: 300;
-    font-family: 'Open Sans', sans-serif;
-    color: #121212;
-  }
-  h1, h2, h3, h4 {
-    font-family: 'Source Sans Pro', sans-serif;
-  }
-</style>
-<title>CS 184 Mesh Editor</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+    <style>
+        body {
+            padding: 100px;
+            width: 1000px;
+            margin: auto;
+            text-align: left;
+            font-weight: 300;
+            font-family: "Open Sans", sans-serif;
+            color: #121212;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: "Source Sans Pro", sans-serif;
+        }
+    </style>
+    <title>CS 184 Mesh Editor</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet" />
 </head>
 
-
 <body>
+    <h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2017</h1>
+    <h1 align="middle">Project 4: Cloth Simulator</h1>
+    <h2 align="middle">Tyler Yang, Vincent Wu, CS184-vwu-tyang</h2>
 
-<h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2017</h1>
-<h1 align="middle">Project 4: Cloth Simulator</h1>
-<h2 align="middle">YOUR NAME, CS184-??</h2>
+    <br /><br />
 
-<br><br>
+    <h2 align="middle">Overview</h2>
+    <p>
+        Give a high-level overview of what you implemented in this project. Think
+        about what you've built as a whole. Share your thoughts on what
+        interesting things you've learned from completing the project.
+    </p>
 
-<div>
+    <h2 align="middle">Part I: Masses and springs</h2>
 
-<h2 align="middle">Overview</h2>
-<p>Give a high-level overview of what you implemented in this project. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the project.</p>
+    <h2 align="middle">Part IV: Handling self-collisions</h2>
+    <h3>Show us at least 3 screenshots that document how your cloth falls and folds on itself, starting with an early,
+        initial self-collision and ending with the cloth at a more restful state (even if it is still slightly bouncy on
+        the ground).
+    </h3>
 
-<h2 align="middle">Part I: Masses and springs</h2>
+    <p> The images below shows snapshots of the same cloth simulation over time.</p>
+    <div align="center">
+        <table style="width: 100%">
+            <tr>
+                <td align="middle">
+                    <img src="./docs/p4_1.png" width="500px" />
+                    <figcaption align="middle">Initial stage</figcaption>
+                </td>
+                <td align="middle">
+                    <img src="./docs/p4_2.png" width="500px" />
+                    <figcaption align="middle">Early collision</figcaption>
+                </td>
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="./docs/p4_3.png" width="500px" />
+                    <figcaption align="middle">More collision</figcaption>
+                </td>
+                <td align="middle">
+                    <img src="./docs/p4_4.png" width="500px" />
+                    <figcaption align="middle">Restful stage</figcaption>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <b>Implementation Overview: </b>
+    <p> For self collision, we can utilize hashmap to check for collisions between nearby voxels. And to construct a
+        good hash function for the Vector3D coordinates, we can take model the 3D space on a grid, and put each point
+        mass into a discrete cell. This is achieved with floor(pos.x / w). To make sure we minimize hash collisions, we
+        designed the following hash function: (fz ^ (fy &lt;&lt; 1)) ^ (fx &lt;&lt; 2); where fx = floor(pos.x / w). We
+        did not use fmod() as it appears to slow down simulation.
+    </p>
+
+
+    <h3>Vary the density as well as ks and describe with words and screenshots
+        how they affect the behavior of the cloth as it falls on itself.</h3>
+    <div align="center">
+        <table style="width: 100%">
+            <tr>
+                <td align="middle">
+                    <img src="./docs/p4_15d_5kks.png" width="500px" />
+                    <figcaption align="middle">Density: 15, ks: 5k</figcaption>
+                </td>
+                <td align="middle">
+                    <img src="./docs/p4_15d_500kks.png" width="500px" />
+                    <figcaption align="middle">Density: 15, ks: 500k</figcaption>
+                </td>
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="./docs/p4_100d_5kks.png" width="500px" />
+                    <figcaption align="middle">Density: 100, ks: 5k</figcaption>
+                </td>
+                <td align="middle">
+                    <img src="./docs/p4_100d_500kks.png" width="500px" />
+                    <figcaption align="middle">Density: 100, ks: 500k</figcaption>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <p><b>Density:</b></p>
+    <p>
+        Increasing the density on clothes increases the overall unit weight for the cloth. Comparing the images above
+        from up to bottom, we can see that as density increase, the cloth appears to collide with itself more. As
+        density increases the cloth also becomes a lot less bouncy, which causes more frequent self collisions that are
+        of smaller magitude.
+    </p>
+
+    <p><b>Spring Constant (ks):</b></p>
+    <p>
+        Increasing the spring constant increases the spring's stiffness. Comparing the images above from left to right,
+        we can see that as spring constant increase, the cloth becomes a lot more stiff. With
+        a lower ks, the cloth appears to be softer and stretchy. As the cloth becomes stiffer, it also collides harder
+        with itself (instead of colliding softly) and is able to quickly reach restful state.
+    </p>
 
 
 </body>
+
 </html>
