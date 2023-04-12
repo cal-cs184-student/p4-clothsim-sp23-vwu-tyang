@@ -4,8 +4,6 @@
 <head>
     <style>
         body {
-            background-color: #404040;
-            background-color: white;
             padding: 100px;
             width: 1000px;
             margin: auto;
@@ -60,11 +58,6 @@
 </head>
 
 <body>
-    <h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2017</h1>
-    <h1 align="middle">Project 4: Cloth Simulator</h1>
-    <h2 align="middle">Tyler Yang, Vincent Wu, CS184-vwu-tyang</h2>
-
-    <br /><br />
 <h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2023</h1>
 <h1 align="middle">Project 4: Cloth Simulator</h1>
 <h2 align="middle">Vincent Wu, Tyler Yang, CS184-vwu-tyang</h2>
@@ -74,12 +67,6 @@
         about what you've built as a whole. Share your thoughts on what
         interesting things you've learned from completing the project.
     </p>
-
-    <h2 align="middle">Part I: Masses and springs</h2>
-<div>
-    <h2 align="middle">Overview</h2>
-    <p>Give a high-level overview of what you implemented in this project. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the project.</p>
-</div>
 
 <a href="https://cs184.eecs.berkeley.edu/sp23/docs/proj4-part-1">
     <h2 align="middle">Part 1: Masses and springs</h2>
@@ -93,11 +80,13 @@
     <table style="width:100%">
         <tr align="center">
             <td>
-                <img src="docs/wireframe.png" align="middle" width="300vw" />
+                <img src="docs/wireframe.png" align="middle" width="500px" />
                 <figcaption>Initial configuration ($\text{ks} = 5,000$)</figcaption>
             </td>
+            </tr>
+        <tr align="center">
             <td>
-                <img src="docs/birdsEye_all.png" align="middle" width="300vw" />
+                <img src="docs/birdsEye_all.png" align="middle" width="500px" />
                 <figcaption>Initial configuration ($\text{ks} = 5,000$)</figcaption>
             </td>
         </tr>
@@ -150,7 +139,7 @@
 </b></blockquote>
 
 <p>
-    TODO
+    While experimenting with the spring constant parameter of the simulation, we noticed that it played a significant role in the elasticity of the cloth during the simulation.  When the spring constant <code> ks </code> was very small (<code>ks = 500</code>), the cloth would warp in the resting position, bowing out in the center and deforming from the starting square shape.  Furthermore, if we look at the two corners where the cloth is pinned, you can see that the corners deform significantly with low <code>ks</code> values, demonstrating the lack of elasticity and stretching,  In a similar vein, increasing the value of <code>ks</code> to be around 5000 led to the cloth falling with minimal elasticity, maintaining a taut straight line at the base in the final resting position.  Likewise, the pinned corners have minimal deformation.  We can also see these effects in the final resting positions of the cloth.  This is due to the fact that the spring constant effectively represents how stiff the spring is, with higher values implying that it is much more restorative, hence less degeneracy.
 </p>
 
 
@@ -161,7 +150,7 @@
 </b></blockquote>
 
 <p>
-    TODO
+    While experimenting with the density parameter of the simulation, we noticed that it played a significant role in the sagging and folding behavior of the cloth during the simulation.  As density increased, we noticed that the cloth would have significant sagging and folding in the center of the cloth in the final resting state.  This is different from the deformation that we see when we have varying ks values. In these simulations, we see folding near the top of the cloth with higher density whereas, with high ks values, there is minimal folding, demonstrating more of the elastic force of the springs.  With low density values, the sagging at the top middle portion of the cloth decreases.  The reason for this is that, with an increased density, the top of the cloth is pulled down more from the lower portions of the cloth.  The elasticity itself does not change with increased density.
 </p>
 
 
@@ -172,7 +161,7 @@
 </b></blockquote>
 
 <p>
-    TODO
+    The damping factor plays a role in how fast the cloth settles into its final resting position.  With a lower damping factor, the convergence of the cloth to its final resting position takes significantly longer, with ripples from the bouncing and the elasticity of the cloth seeing less attenuation.  The cloth continues to oscillate back and forth for much longer and shows significantly more movement.  When the damping factor is high, the cloth settles much faster into its resting position, and movements that ripple through the cloth as it falls are quickly flattened.  When comparing a damping factor of 0% with a damping factor of 100%, it is evident as to the difference it takes for the cloth to converge into it’s resting position due to the sensitivity of the cloth to movement.
 </p>
 
 
@@ -186,22 +175,62 @@
 <div align="middle">
     <table style="width:100%">
         <tr align="center">
+            <h1 align="center"> Representations of different <code>ks</code> values</h1>
             <td>
-                <img src="images/t2-interesting-difference1.png" align="middle" width="400vw" />
+                <img src="docs/ks5.png" align="middle" width="300uv" />
+                <figcaption><code>ks = 5</code></figcaption>
+            </td>
+            <td>
+                <img src="docs/ks5000.png" align="middle" width="300uv" />
+                <figcaption>Default parameters</figcaption>
+            </td>
+            <td>
+                <img src="docs/ks50000.png" align="middle" width="300uv" />
+                <figcaption><code>ks = 50000</code></figcaption>
+            </td>
+        </tr>
+        </table>
+    <table style="width:100%">
+        <tr align="center">
+            <h1 align="center"> Representations of different density values</h1>
+            <td>
+                <img src="docs/density0.1.png" align="middle" width="300uv" />
+                <figcaption>density = 0.1</figcaption>
+            </td>
+            <td>
+                <img src="docs/ks5000.png" align="middle" width="300uv" />
+                <figcaption>Default parameters</figcaption>
+            </td>
+            <td>
+                <img src="docs/density1000.png" align="middle" width="300uv" />
+                <figcaption>density = 1000</figcaption>
+            </td>
+        </tr>
+    </table>
+    <table style="width:100%">
+        <tr align="center">
+            <h1 align="center"> Representations of different damping values</h1>
+            <td>
+                <video width="320" height="240" controls>
+                    <source src="docs/0dampening.mp4">
+                </video>
+                <figcaption>damping = 0.0%</figcaption>
+            </td>
+            <td>
+                <video width="320" height="240" controls>
+                    <source src="docs/defaultdamping.mp4">
+                </video>
                 <figcaption>Default Parameters</figcaption>
             </td>
             <td>
-                <img src="images/t2-interesting-difference2.png" align="middle" width="400vw" />
-                <figcaption>Default Parameters</figcaption>
+                <video width="320" height="240" controls>
+                    <source src="docs/100dampening.mp4">
+                </video>
+                <figcaption>damping = 100.0%</figcaption>
             </td>
-            <td>
         </tr>
     </table>
 </div>
-
-<p>
-    TODO
-</p>
 
 
 <blockquote><b>
@@ -210,7 +239,32 @@
 </b></blockquote>
 
 <div align="middle">
-    <img src="images/t2-shaded-cloth-resting-p4.png" align="middle" width="100%" />
+    <table style="width:100%">
+        <tr align="center">
+            <td>
+                <img src="docs/pinned4_wireframe.png" align="middle" width="500px" />
+                <figcaption>pinned4.json wireframe in resting position</figcaption>
+            </td>
+        </tr>
+        <tr align="center">
+            <td>
+                <img src="docs/pinned4_final.png" align="middle" width="500px" />
+                <figcaption>pinned4.json with normal shading in resting position</figcaption>
+            </td>
+        </tr>
+        <tr align="center">
+            <td>
+                <img src="docs/pinned4_angle.png" align="middle" width="500px" />
+                <figcaption>different angle of pinned4.json with normal shading in resting position</figcaption>
+            </td>
+        </tr>
+        <tr align="center">
+            <td>
+                <img src="docs/birdeye_pinned4.png" align="middle" width="500px" />
+                <figcaption> bird's eye angle of pinned4.json with normal shading in resting position</figcaption>
+            </td>
+        </tr>
+    </table>
 </div>
 
 
@@ -227,18 +281,21 @@
     <table style="width:100%">
         <tr align="center">
             <td>
-                <img src="docs/k500_normal.png" align="middle" width="300vw" />
+                <img src="docs/k500_normal.png" align="middle" width="500px" />
                 <figcaption>$\text{ks} = 500$</figcaption>
             </td>
+        </tr>
+        <tr align="center">
             <td>
-                <img src="docs/k5000_normal.png" align="middle" width="300vw" />
+                <img src="docs/k5000_normal.png" align="middle" width="500px" />
                 <figcaption>Initial configuration ($\text{ks} = 5,000$)</figcaption>
             </td>
+        </tr>
+        <tr align="center">
             <td>
-                <img src="docs/k50000_normal.png" align="middle" width="300vw" />
+                <img src="docs/k50000_normal.png" align="middle" width="500px" />
                 <figcaption>$\text{ks} = 50,000$</figcaption>
             </td>
-            <td>
         </tr>
     </table>
 </div>
@@ -270,10 +327,13 @@
 </a>
 
 <h2 align="middle">Part IV: Handling self-collisions</h2>
-    <h3>Show us at least 3 screenshots that document how your cloth falls and folds on itself, starting with an early,
+    <blockquote>
+        <b>
+            Show us at least 3 screenshots that document how your cloth falls and folds on itself, starting with an early,
         initial self-collision and ending with the cloth at a more restful state (even if it is still slightly bouncy on
         the ground).
-    </h3>
+        </b>
+    </blockquote>
 
     <p> The images below shows snapshots of the same cloth simulation over time.</p>
     <div align="center">
@@ -309,8 +369,8 @@
     </p>
 
 
-    <h3>Vary the density as well as ks and describe with words and screenshots
-        how they affect the behavior of the cloth as it falls on itself.</h3>
+   <blockquote> <b>Vary the density as well as ks and describe with words and screenshots
+        how they affect the behavior of the cloth as it falls on itself.</b></blockquote>
     <div align="center">
         <table style="width: 100%">
             <tr>
