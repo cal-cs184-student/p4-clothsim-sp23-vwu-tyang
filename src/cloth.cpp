@@ -248,7 +248,7 @@ float Cloth::hash_position(Vector3D pos) {
     int fx = floor(pos.x / w);
     int fy = floor(pos.y / h);
     int fz = floor(pos.z / t);
-    return (fx ^ (fy << 1)) ^ (fz << 2);
+    return (fz ^ (fy << 1)) ^ (fx << 2);
 }
 
 ///////////////////////////////////////////////////////
